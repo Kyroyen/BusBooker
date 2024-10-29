@@ -99,8 +99,4 @@ class Booking(models.Model):
     
     class Meta:
         unique_together = ('bus', 'row', 'col')
-        
-
-    
-    
     

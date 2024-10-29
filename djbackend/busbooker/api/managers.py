@@ -32,8 +32,11 @@ class BusManagerBase(Manager):
     
 class BusManagerReadOnly(BusManagerBase):
     
-    def get_bus(self, bus_id):
+    def get_bus(self, bus_id, initialze_counts:bool = False):
         bus = super().get_bus(bus_id)
+        if bus is None: return None
+        if initialze_counts:
+            bus.counts_prefetch()
         return bus
     
     def get_buses_from_flat_list(self, busid_flat_list):
@@ -102,5 +105,5 @@ class BookingReadManager(BookingManager):
         return bus_ids
     
     def get_counts_for_user_in_bus(self, bus_id, user):
-        return self.get_booked_query().filter(user = user, bus__id = bus_id).count()
+        return self.get_booked_query().filter(user = user, bus__id = bus_id, booked = True).values("row", "col", "bus__id")
         

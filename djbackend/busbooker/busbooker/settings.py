@@ -22,6 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-b8n&4hkp+z&w+02dr+c))w-vk8!!a+t!#&bdg%=8l2k__!(ob_'
 
+TOKEN_EXPIRE_DELTA = 30
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -90,6 +92,7 @@ DATABASES = {
         'PORT': '5432',                  # Default PostgreSQL port
     }
 }
+
 
 
 # Password validation
