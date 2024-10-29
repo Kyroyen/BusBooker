@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework.exceptions import AuthenticationFailed
 import jwt
 from datetime import datetime, timedelta
+from django.core.cache import cache
 
 from django.conf import settings
 
@@ -23,7 +24,12 @@ class CustomAuthentication:
             decoded = jwt.decode(
                 user_token, settings.SECRET_KEY, algorithms=['HS256']
             )
-            user = User.objects.get(username=decoded['username'])
+            username = decoded['username']
+            cache_key = f"username_user:{username}"
+            user = cache.get(cache_key)
+            if user is None:
+                user = User.objects.get(username=username)
+                cache.set(cache_key,  user, 120)
             return user
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Expired token')

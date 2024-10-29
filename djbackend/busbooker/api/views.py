@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 from api.models import *
 from api.serializers import *
@@ -22,7 +23,6 @@ class CustomTokenAuthentication(APIView):
             return Response(data={"message": "Include both things in request"}, status=403)
 
         user = User.objects.get(username=username)
-        print(user)
         if user.check_password(password):
             return Response(
                 data={
@@ -31,7 +31,6 @@ class CustomTokenAuthentication(APIView):
                 },
                 status=200
             )
-        
         return Response(data={"error": "Can't create token"}, status=200)
     
     def put(self, request):
@@ -51,38 +50,58 @@ class CustomTokenAuthentication(APIView):
 class RouteBuses(APIView):
 
     def get(self, request):
+        #cache
         start = request.GET.get("start")
         end = request.GET.get("end")
-        buses_in_route = Route.route_manager.get_buses_in_routes(
-            start=start, end=end)
-        for bus in buses_in_route:
-            bus.counts_prefetch()
+        cache_key = f"bus_route:{start};{end}"
+        data = cache.get(cache_key)
+        
+        if data is None:
+            buses_in_route = Route.route_manager.get_buses_in_routes(
+                start=start, end=end)
+            for bus in buses_in_route:
+                bus.counts_prefetch()
 
-        serializer = BusSerializer(buses_in_route, many=True)
-        return Response(serializer.data)
+            serializer = BusSerializer(buses_in_route, many=True)
+            data = serializer.data
+            cache.set(cache_key,  data, 60)
+
+        return Response(data)
 
 
 class BusView(APIView):
 
     def get(self, request, bus_id):
-        
-        bus = Bus.read_only_manager.get_bus(bus_id, initialze_counts = True)
-        if bus is None:
-            return Response(data={"message": "Nothing to show"}, status=404)
-        serializer = BusSerializer(bus)
-        return Response(data=serializer.data, status=200)
+        cache_key = f"bus_data:{bus_id}"
+        bus_data = cache.get(cache_key)
+
+        if bus_data is None:
+            bus = Bus.read_only_manager.get_bus(bus_id, initialze_counts = True)
+            if bus is None:
+                return Response(data={"message": "Nothing to show"}, status=404)
+            bus_data = BusSerializer(bus).data
+            cache.set(cache_key, bus_data, 60)
+            
+        return Response(data=bus_data, status=200)
 
     def post(self, request, bus_id):
-        bus = Bus.read_only_manager.get_seatarrangement(bus_id)
-        busobj = Bus.objects.get(pk=bus_id).seat_plan
-        if bus is None:
-            return Response(data={"message": "Nothing to show"}, status=404)
+        
+        cache_key = f"bus_seat_data:{bus_id}"
+        bus_seat_data = cache.get(cache_key)
 
-        bus_seat_data = {
-            "occupied": bus,
-            "wide": 10 if busobj is None else busobj.rows,
-            "long": 10 if busobj is None else busobj.cols,
-        }
+        if bus_seat_data is None:
+            bus = Bus.read_only_manager.get_seatarrangement(bus_id)
+            busobj = Bus.objects.get(pk=bus_id).seat_plan
+            if bus is None:
+                return Response(data={"message": "Nothing to show"}, status=404)
+
+            bus_seat_data = {
+                "occupied": bus,
+                "wide": 10 if busobj is None else busobj.rows,
+                "long": 10 if busobj is None else busobj.cols,
+            }
+            cache.set(cache_key, bus_seat_data, 30)
+            
         return Response(data=bus_seat_data, status=200)
 
 
@@ -94,7 +113,6 @@ class BookingView(APIView):
         except:
             return Response(data={"error": "Can't authenticate"}, status=403)
         
-        print(user)
         booked_buses = Booking.read_manager.get_user_booked_buses(user)
         booking_data = [
             {
