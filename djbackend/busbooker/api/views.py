@@ -27,7 +27,8 @@ class CustomTokenAuthentication(APIView):
             return Response(
                 data={
                     "message": "Authentication successful",
-                    'token': CustomAuthentication().create_auth_token(user)
+                    'access_token': CustomAuthentication().create_auth_token(user),
+                    'refresh_token': CustomAuthentication().create_auth_token(user, 60*60*24)
                 },
                 status=200
             )
@@ -59,8 +60,6 @@ class RouteBuses(APIView):
         if data is None:
             buses_in_route = Route.route_manager.get_buses_in_routes(
                 start=start, end=end)
-            for bus in buses_in_route:
-                bus.counts_prefetch()
 
             serializer = BusSerializer(buses_in_route, many=True)
             data = serializer.data
@@ -91,9 +90,9 @@ class BusView(APIView):
 
         if bus_seat_data is None:
             bus = Bus.read_only_manager.get_seatarrangement(bus_id)
-            busobj = Bus.objects.get(pk=bus_id).seat_plan
             if bus is None:
                 return Response(data={"message": "Nothing to show"}, status=404)
+            busobj = Bus.objects.get(pk=bus_id).seat_plan
 
             bus_seat_data = {
                 "occupied": bus,

@@ -36,10 +36,10 @@ class CustomAuthentication:
         except Exception:
             raise AuthenticationFailed('Invalid token')
         
-    def create_auth_token(self, user):
+    def create_auth_token(self, user, timeout = 30):
         token_data = {
             "username" : user.username,
-            "exp": datetime.now() + timedelta(minutes=30)
+            "exp": datetime.now() + timedelta(minutes=timeout)
         }
             
         encoded_token = jwt.encode(

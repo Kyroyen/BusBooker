@@ -1,6 +1,7 @@
 from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 from api.managers import *
 
@@ -37,6 +38,8 @@ class Bus(models.Model):
     saturday = models.BooleanField(default=False)
     sunday = models.BooleanField(default=False)
     
+    scheduled_date = models.DateField(default=datetime.date(datetime.now()))
+    
     route = models.ForeignKey(to = Route, on_delete=models.CASCADE, related_name= "buses", null=True)
     seat_plan = models.OneToOneField(to = SeatPlan, related_name="bus", on_delete=models.SET_NULL, null=True)
     
@@ -57,6 +60,7 @@ class Bus(models.Model):
         
     @property
     def getDaysScheduled(self):
+        if not hasattr(self, "_scheduled_days"): self.counts_prefetch()
         return self._scheduled_days
     
     def update_days_scheduled(self):
@@ -64,6 +68,7 @@ class Bus(models.Model):
     
     @property
     def getTotalSeats(self):
+        if not hasattr(self, "_total_seats"): self.counts_prefetch()
         return self._total_seats
         
     def update_total_seats(self):
@@ -71,6 +76,7 @@ class Bus(models.Model):
     
     @property
     def getTotalBookings(self):
+        if not hasattr(self, "_total_bookings"): self.counts_prefetch()
         return self._total_bookings
     
     def update_total_bookings(self):

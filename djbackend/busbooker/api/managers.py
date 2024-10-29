@@ -1,5 +1,6 @@
 from django.db.models.manager import Manager
 from django.db import transaction
+from django.core.cache import cache
 
 from typing import List, Tuple
 
@@ -33,20 +34,34 @@ class BusManagerBase(Manager):
 class BusManagerReadOnly(BusManagerBase):
     
     def get_bus(self, bus_id, initialze_counts:bool = False):
-        bus = super().get_bus(bus_id)
-        if bus is None: return None
-        if initialze_counts:
-            bus.counts_prefetch()
+        cache_key = f"bus_data:{bus_id}"
+        
+        bus = cache.get(cache_key)
+
+        if bus is None:
+            bus = super().get_bus(bus_id)
+            if bus is None: return None
+            if initialze_counts:
+                bus.counts_prefetch()
+            cache.set(cache_key, bus, 60)
+        
         return bus
     
     def get_buses_from_flat_list(self, busid_flat_list):
         return [self.get_bus(id) for id in busid_flat_list]
     
     def get_seatarrangement(self, bus_id):
-        bus = self.get_bus(bus_id)
-        if bus is None: return None
-        bookings = bus.booking_set.all()
-        return tuple(SeatArrangementMaker.intoInteger(i.row, i.col) for i in bookings)
+        cache_key = f"bus_seat_grid_data:{bus_id}"
+        bus_seat_data = cache.get(cache_key)
+
+        if bus_seat_data is None:
+            bus = self.get_bus(bus_id)
+            if bus is None: return None
+            bookings = bus.booking_set.all()
+            bus_seat_data = tuple(SeatArrangementMaker.intoInteger(i.row, i.col) for i in bookings)
+            cache.set(cache_key, bus_seat_data, 60)
+        
+        return bus_seat_data
     
 
 class BookingManager(Manager):
@@ -80,6 +95,7 @@ class BookingsWriteManager(BookingManager):
         try:
             with transaction.atomic():
                 self.bulk_create(bookings_to_create)
+            cache.delete_many([f"bus_seat_grid_data:{bus.id}", f"bus_seat_data:{bus.id}",f"bus_data:{bus.id}"])
             return True
         except:
             return False
@@ -95,6 +111,7 @@ class BookingsWriteManager(BookingManager):
         queryset = self.get_queryset().filter(bus = bus, user = user, locked=True)
         if not queryset: return False
         if queryset.delete():
+            cache.delete_many([f"bus_seat_grid_data:{bus.id}", f"bus_seat_data:{bus.id}",f"bus_data:{bus.id}"])
             return True
         return False
     

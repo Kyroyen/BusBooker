@@ -5,15 +5,19 @@ from api.models import *
 class BusAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ("bus_name",
-                       "start_time",
-                       "end_time",
-                       "fare",)  # Fields you want outside of the "Schedule" section
+            'fields': (
+                "bus_name",
+                "start_time",
+                "end_time",
+                "fare",
+                "scheduled_date"
+            )  # Fields you want outside of the "Schedule" section
         }),
-        ('Schedule', {
-            'fields': ('monday', 'tuesday', 'wednesday', 'thrusday', 'friday', 'saturday', 'sunday'),
-            'classes': ('schedule',),
-        }),
+        # ('Schedule', {
+        #     'fields': ('monday', 'tuesday', 'wednesday', 'thrusday', 'friday', 'saturday', 'sunday'),
+        #     'classes': ('schedule',),
+        # }),
+        
         (None, {
             "fields": ("route", "seat_plan")
         })
