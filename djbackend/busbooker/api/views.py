@@ -58,10 +58,24 @@ class RouteBuses(APIView):
         data = cache.get(cache_key)
         
         if data is None:
-            buses_in_route = Route.route_manager.get_buses_in_routes(
-                start=start, end=end)
+            try:
+                start_stop_id = Stop.objects.get(name = start).id
+                stop_stop_id = Stop.objects.get(name = end).id
+            except Stop.DoesNotExist:
+                return Response(data={"message": "Nothing to show"}, status=404)
+            
+            routes_between_stops = Route.route_manager.get_bus_in_routes(
+                start_stop_id= start_stop_id, end_stop_id=stop_stop_id
+                )
+            
+            buses_between_stops = Bus.read_only_manager.get_busid_list_from_routeid_list(
+                routes_between_stops
+            )
 
-            serializer = BusSerializer(buses_in_route, many=True)
+            serializer = BusSerializer(
+                Bus.read_only_manager.get_buses_from_flat_list(buses_between_stops), 
+                many=True
+            )
             data = serializer.data
             cache.set(cache_key,  data, 60)
 

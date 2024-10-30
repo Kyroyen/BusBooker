@@ -1,5 +1,5 @@
 from django.db.models.manager import Manager
-from django.db import transaction
+from django.db import transaction, connection
 from django.core.cache import cache
 
 from typing import List, Tuple
@@ -16,12 +16,29 @@ class SeatArrangementMaker:
 
 class RouteManager(Manager):
     
-    def get_buses_in_routes(self, start, end):
-        buses_in_route = self.get_queryset().filter(source = start, destination = end).first()
-        if buses_in_route is None:
-            return []
-        return buses_in_route.buses.all()
+    def get_routes_ids_in_stops(self, start_stop_id, end_stop_id):
+        cache_key = f"Buses_in_stops:{start_stop_id};{end_stop_id}"
+        route_ids = cache.get(cache_key)
+        if route_ids is None:
+            query = '''
+                SELECT DISTINCT r1.route_id 
+                FROM api_routestops as r1 JOIN api_routestops 
+                as r2 ON r1.route_id=r2.route_id
+                WHERE r1.stop_id=%s and r2.stop_id=%s 
+                and r1.stop_sequence<r2.stop_sequence;
+                '''
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    query, (start_stop_id, end_stop_id)
+                )
+                route_ids = [row[0] for row in cursor.fetchall()]
+            cache.set(cache_key, route_ids, timeout=200)
+        return route_ids
     
+    def get_bus_in_routes(self, start_stop_id, end_stop_id):
+        route_id = self.get_routes_ids_in_stops(start_stop_id, end_stop_id)
+        return route_id
+        
     
 class BusManagerBase(Manager):
     
@@ -46,6 +63,9 @@ class BusManagerReadOnly(BusManagerBase):
             cache.set(cache_key, bus, 60)
         
         return bus
+    
+    def get_busid_list_from_routeid_list(self, route_ids_list):
+        return self.get_querybase().filter(route__id__in = route_ids_list).values_list('id', flat=True)
     
     def get_buses_from_flat_list(self, busid_flat_list):
         return [self.get_bus(id) for id in busid_flat_list]

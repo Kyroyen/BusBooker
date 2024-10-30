@@ -11,13 +11,8 @@ class BusAdmin(admin.ModelAdmin):
                 "end_time",
                 "fare",
                 "scheduled_date"
-            )  # Fields you want outside of the "Schedule" section
-        }),
-        # ('Schedule', {
-        #     'fields': ('monday', 'tuesday', 'wednesday', 'thrusday', 'friday', 'saturday', 'sunday'),
-        #     'classes': ('schedule',),
-        # }),
-        
+            )
+        }),        
         (None, {
             "fields": ("route", "seat_plan")
         })
@@ -29,6 +24,8 @@ class BusAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Route)
+admin.site.register(RouteStops)
+admin.site.register(Stop)
 admin.site.register(SeatPlan)
 admin.site.register(Booking)
 admin.site.register(Bus, BusAdmin)

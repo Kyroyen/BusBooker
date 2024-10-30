@@ -5,16 +5,21 @@ from datetime import datetime
 
 from api.managers import *
 
-class Route(models.Model):
-    source = models.CharField(max_length=50)
-    destination = models.CharField(max_length=50)
-    distance = models.PositiveIntegerField(default=0)
+class Stop(models.Model):
+    name = models.CharField(max_length=50)
     
-    #managers
+class Route(models.Model):
+    name = models.CharField(max_length=50)
     route_manager = RouteManager()
     
+class RouteStops(models.Model):
+    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="routes")
+    stop = models.ForeignKey(Stop, on_delete=models.CASCADE, related_name="stops_on_routes")
+    stop_sequence = models.PositiveIntegerField()
+    
     class Meta:
-        unique_together = ("source", "destination")
+        unique_together = ('route', 'stop', "stop_sequence")
+        
 
 class SeatPlan(models.Model):
     rows = models.PositiveIntegerField(default=2)
@@ -29,14 +34,6 @@ class Bus(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     fare = models.PositiveIntegerField(default=100)
-
-    monday = models.BooleanField(default=False)
-    tuesday = models.BooleanField(default=False)
-    wednesday = models.BooleanField(default=False)
-    thrusday = models.BooleanField(default=False)
-    friday = models.BooleanField(default=False)
-    saturday = models.BooleanField(default=False)
-    sunday = models.BooleanField(default=False)
     
     scheduled_date = models.DateField(default=datetime.date(datetime.now()))
     
@@ -54,17 +51,8 @@ class Bus(models.Model):
         super().__init__(*args, **kwargs)
         
     def counts_prefetch(self):
-        self.update_days_scheduled()
         self.update_total_seats()
         self.update_total_bookings()
-        
-    @property
-    def getDaysScheduled(self):
-        if not hasattr(self, "_scheduled_days"): self.counts_prefetch()
-        return self._scheduled_days
-    
-    def update_days_scheduled(self):
-        self._scheduled_days = tuple(getattr(self, i) for i in ("monday","tuesday","wednesday","thrusday","friday","saturday","sunday"))
     
     @property
     def getTotalSeats(self):
