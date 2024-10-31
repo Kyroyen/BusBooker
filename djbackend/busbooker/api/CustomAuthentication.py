@@ -30,6 +30,7 @@ class CustomAuthentication:
             if user is None:
                 user = User.objects.get(username=username)
                 cache.set(cache_key,  user, 120)
+            print("User",user)
             return user
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Expired token')

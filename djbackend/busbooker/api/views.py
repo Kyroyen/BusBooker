@@ -15,9 +15,13 @@ class CustomTokenAuthentication(APIView):
         password = request.data.get("password")
 
         if (username is None) or (password is None):
-            return Response(data={"message": "Include both things in request"}, status=403)
+            return Response(data={"message": "Include both things in request"}, status=401)
 
-        user = User.objects.get(username=username)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response(data={"message": "Login not found"}, status=401)
+            
         if user.check_password(password):
             return Response(
                 data={
@@ -46,6 +50,10 @@ class CustomTokenAuthentication(APIView):
 class RouteBuses(APIView):
 
     def get(self, request):
+        try:
+            user = CustomAuthentication().authenticate(request)
+        except:
+            return Response(data={"error": "Can't authenticate"}, status=401)
         #cache
         start = request.GET.get("start")
         end = request.GET.get("end")
@@ -119,7 +127,7 @@ class BookingView(APIView):
         try:
             user = CustomAuthentication().authenticate(request)
         except:
-            return Response(data={"error": "Can't authenticate"}, status=403)
+            return Response(data={"error": "Can't authenticate"}, status=401)
         
         booked_buses = Booking.read_manager.get_user_booked_buses(user)
         booking_data = [
@@ -141,7 +149,7 @@ class BookingView(APIView):
         try:
             user = CustomAuthentication().authenticate(request)
         except:
-            return Response(data={"error": "Can't authenticate"}, status=403)
+            return Response(data={"error": "Can't authenticate"}, status=401)
         
         bus_id = request.data.get("bus_id")
         try:
@@ -155,7 +163,7 @@ class BookingView(APIView):
             ]
         print(user, encoded_seats, seats)
         if Booking.write_manager.lock_seats(bus, user, seats):
-            return Response(data={"message": "Seat Availability Confirmed"}, status=301)
+            return Response(data={"message": "Seat Availability Confirmed"}, status=201)
         else:
             return Response(data={"message": "Some Error Occured, Try Again"}, status=405)
 
@@ -170,9 +178,9 @@ class BookingView(APIView):
         except Bus.DoesNotExist:
             return Response(data={"error": "Bus not found"}, status=404)
         if Booking.write_manager.confirm_seats(bus, user):
-            return Response(data={"message": "Seats Booked"}, status=301)
+            return Response(data={"message": "Seats Booked"}, status=201)
         else:
-            return Response(data={"message": "Some Error Occured"}, status=405)
+            return Response(data={"message": "Some Error Occured"}, status=404)
 
     def delete(self, request):
         try:
@@ -185,6 +193,6 @@ class BookingView(APIView):
         except Bus.DoesNotExist:
             return Response(data={"error": "Bus not found"}, status=404)
         if Booking.write_manager.booking_cancel(bus, user):
-            return Response(data={"message": "Seats cancelled!"}, status=301)
+            return Response(data={"message": "Seats cancelled!"}, status=201)
         else:
             return Response(data={"message": "Some Error Occured"}, status=405)

@@ -123,7 +123,10 @@ class BookingsWriteManager(BookingManager):
     def confirm_seats(self, bus, user):
         
         queryset = self.get_queryset().filter(bus = bus, user = user, locked=True, booked = False)
+        if not queryset:
+            return False
         if self.get_queryset().filter(bus=bus, user=user, locked = True).exists():
+            cache.delete_many([f"bus_seat_grid_data:{bus.id}", f"bus_seat_data:{bus.id}",f"bus_data:{bus.id}"])
             queryset.update(booked = True)
             return True
     

@@ -7,10 +7,15 @@ from api.managers import *
 
 class Stop(models.Model):
     name = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.name
     
 class Route(models.Model):
     name = models.CharField(max_length=50)
     route_manager = RouteManager()
+    
+    def __str__(self) -> str:
+        return self.name
     
 class RouteStops(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="routes")
@@ -22,8 +27,12 @@ class RouteStops(models.Model):
         
 
 class SeatPlan(models.Model):
+    name = models.CharField(max_length=50, default="SeatPlan")
     rows = models.PositiveIntegerField(default=2)
     cols = models.PositiveIntegerField(default=2)
+    
+    def __str__(self) -> str:
+        return self.name
     
     @property
     def total_seats(self):
@@ -38,7 +47,7 @@ class Bus(models.Model):
     scheduled_date = models.DateField(default=datetime.date(datetime.now()))
     
     route = models.ForeignKey(to = Route, on_delete=models.CASCADE, related_name= "buses", null=True)
-    seat_plan = models.OneToOneField(to = SeatPlan, related_name="bus", on_delete=models.SET_NULL, null=True)
+    seat_plan = models.ForeignKey(to = SeatPlan, related_name="bus", on_delete=models.SET_NULL, null=True)
     
     bookings = models.ManyToManyField(to = User, through='Booking', related_name='booked_buses')
     
@@ -47,8 +56,8 @@ class Bus(models.Model):
     
     objects = models.Manager()
     
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+    def __str__(self) -> str:
+        return self.bus_name
         
     def counts_prefetch(self):
         self.update_total_seats()
