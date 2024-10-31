@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,6 +64,8 @@ ROOT_URLCONF = 'busbooker.urls'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:3000",
+    "http://localhost:8000",
 ]
 
 TEMPLATES = [
@@ -81,9 +86,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'busbooker.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+POSTGRES_DATABASE_NAME = os.environ.get("POSTGRES_DATABASE_NAME")
+POSTGRES_DATABASE_USER = os.environ.get("POSTGRES_DATABASE_USER")
+POSTGRES_DATABASE_PASSWORD = os.environ.get("POSTGRES_DATABASE_PASSWORD")
+POSTGRES_DATABASE_HOST = os.environ.get("POSTGRES_DATABASE_HOST")
+POSTGRES_DATABASE_PORT = os.environ.get("POSTGRES_DATABASE_PORT")
 
 DATABASES = {
     # 'default': {
@@ -92,11 +99,11 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'busdatabase',           # Database name from Docker run command
-        'USER': 'user',                  # Username from Docker run command
-        'PASSWORD': 'postgres',   # Password from Docker run command
-        'HOST': 'localhost',             # Use 'localhost' if mapped to 5432; otherwise, the IP address from Step 2
-        'PORT': '5432',                  # Default PostgreSQL port
+        'NAME': POSTGRES_DATABASE_NAME,           # Database name from Docker run command
+        'USER': POSTGRES_DATABASE_USER,                  # Username from Docker run command
+        'PASSWORD': POSTGRES_DATABASE_PASSWORD,   # Password from Docker run command
+        'HOST': POSTGRES_DATABASE_HOST,             # Use 'localhost' if mapped to 5432; otherwise, the IP address from Step 2
+        'PORT': POSTGRES_DATABASE_PORT,                  # Default PostgreSQL port
     }
 }
 

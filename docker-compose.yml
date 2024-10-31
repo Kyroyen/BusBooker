@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_DATABASE_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_DATABASE_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE_NAME}
+    networks:
+      - app_network
+
+  redis:
+    image: redis:alpine
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: djbackend/Dockerfile
+    volumes:
+      - ./djbackend:/app
+    ports:
+      - "8000:8000"
+    
+    environment:
+      - DJANGO_SUPERUSER_USERNAME=rishu
+      - DJANGO_SUPERUSER_PASSWORD=12345
+      - DJANGO_SUPERUSER_EMAIL=rishush804@gmail.com
+      - POSTGRES_DATABASE_NAME=${POSTGRES_DATABASE_NAME}  
+      - POSTGRES_DATABASE_USER=${POSTGRES_DATABASE_USER}
+      - POSTGRES_DATABASE_PASSWORD=${POSTGRES_DATABASE_PASSWORD}
+      - POSTGRES_DATABASE_HOST=${POSTGRES_DATABASE_HOST}
+      - POSTGRES_DATABASE_PORT=${POSTGRES_DATABASE_PORT}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: rctfrontend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:8000/api
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
