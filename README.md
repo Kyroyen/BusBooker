@@ -1,5 +1,6 @@
+# Bus Booking Project
 
-# Django Project
+## Django
 
 A brief description of your project goes here. This project is built using Django and serves as a [web application/API platform].
 
