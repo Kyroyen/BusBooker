@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import axiosInstance from "../api/axiosInstance";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Modal({ busData, onClose }) {
   const [selectedSeats, setSelectedSeats] = useState([]);
@@ -55,12 +55,11 @@ function Modal({ busData, onClose }) {
       .then(() => {
         setShowConfirm(false);
         handleGetBusSeatData(bus_id);
-        navigate("/bookings")
+        navigate("/bookings");
       })
       .catch(() => {
         console.log("show error");
       });
-    
   };
 
   const cancelSeats = async () => {
@@ -108,11 +107,13 @@ function Modal({ busData, onClose }) {
             <h2>Details</h2>
             <p>Name: {busData.bus_name}</p>
             <p>ID: {busData.id}</p>
-            <p className="bg-green-500 p-2 rounded-md">Fare: {busData.fare * selectedSeats.length}</p>
+            <p className="bg-green-500 p-2 rounded-md">
+              Fare: {busData.fare * selectedSeats.length}
+            </p>
             <p></p>
           </div>
           <div className="bg-orange-300 border p-5 rounded-md">
-            Seats: 
+            Seats:
             {selectedSeats.map((value, index) => {
               return (
                 <span key={index}>{`${value.row * 1000 + value.col}, `}</span>
@@ -167,7 +168,7 @@ function Modal({ busData, onClose }) {
                 >
                   <input
                     type="checkbox"
-                    className="w-3.5 h-3.5"
+                    className="w-3.5 h-3.5 checkbox-container bg-yellow-400"
                     checked={isSeatSelected(rowIndex, colIndex)}
                     disabled={isSeatDisabled(rowIndex, colIndex)}
                     onChange={() => toggleSeatSelection(rowIndex, colIndex)}
@@ -176,16 +177,6 @@ function Modal({ busData, onClose }) {
               ))}
             </React.Fragment>
           ))}
-          {/* <div className="col-span-full mt-4 p-2 bg-gray-100 rounded">
-            <h3 className="text-lg font-semibold">Selected Seats:</h3>
-            <ul className="list-disc pl-5">
-              {selectedSeats.map((seat, index) => (
-                <li key={index}>
-                  Row {seat.row + 1}, Column {seat.col + 1}
-                </li>
-              ))}
-            </ul>
-          </div> */}
         </div>
       </div>
     </div>

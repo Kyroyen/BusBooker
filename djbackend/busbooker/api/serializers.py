@@ -13,6 +13,7 @@ class BusSerializer(serializers.ModelSerializer):
             "id",
             'bus_name',
             'fare',
+            "start_time",
             "scheduled_date",
             'total_bookings',
             "total_seats",

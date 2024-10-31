@@ -70,7 +70,7 @@ function Home() {
         <div className="w-full justify-center flex">
           <div className="w-[70%] flex flex-col items-center text-center justify-center space-y-2 py-5 ">
             <div className="w-full rounded-lg p-4 mb-4 flex flex-row space-x-5 justify-between">
-              <span> SrNo. </span>
+              <span>BusNo</span>
               <span>Name</span>
               <span>Start Time</span>
               <span>End Time</span>

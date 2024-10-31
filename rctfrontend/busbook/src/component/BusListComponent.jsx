@@ -33,8 +33,8 @@ function BusListComponent({ busData, onClick }) {
     <div onClick={(e) => onClick(busData)} className={`w-full rounded-lg p-4 mb-4 flex flex-row space-x-5 justify-between border-x-8 border-y-2 ${backgroundColor} ${borderColor} cursor-pointer`}>
       <span>{busData.id}</span>
       <span>{busData.bus_name}</span>
-      <span>{busData.start_time}</span>
       <span>{busData.end_time}</span>
+      <span>{busData.start_time}</span>
       <span>{busData.fare}</span>
       <span>{busData.scheduled_date	}</span>
       <span>{busData.avaliable_seats}</span>

@@ -56,7 +56,11 @@ class RouteManager(Manager):
 class RouteStopReadManager(Manager):
     
     def get_sequence_id_from_route_stop(self, route_id, stop_id):
-        return self.get_queryset().filter(route__id = route_id, stop__id = stop_id).first().stop_sequence
+        cache_key = f"route_stop_to_sequence_ind:{route_id};{stop_id}"
+        sequence_id = cache.get(cache_key)
+        if sequence_id is None:
+            sequence_id = self.get_queryset().filter(route__id = route_id, stop__id = stop_id).first().stop_sequence
+        return sequence_id
 
 
 class BusManagerBase(Manager):
@@ -119,7 +123,7 @@ class BookingManager(Manager):
         return self.get_querybase().filter(booked=True)
 
     def check_if_lock_possible(self, seats: List[Tuple[int, int]], bus, user):
-        return not any(self.get_querybase().filter(bus=bus, user=user, row=row, col=col).exists() for row, col in seats)
+        return not any(self.get_querybase().filter(bus=bus, row=row, col=col).exists() for row, col in seats)
 
 
 class BookingsWriteManager(BookingManager):

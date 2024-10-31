@@ -46,7 +46,6 @@ function BookingsPage() {
             <span>{busData.bus_data.fare * busData.seats.length}</span>
             <span>{busData.bus_data.scheduled_date}</span>
             <span>{busData.bus_data.start_time}</span>
-            <span>{busData.bus_data.end_time}</span>
           </div>
           <div className="w-full justify-between flex flex-row space-x-5 px-4">
             <div className="w-full justify-between px-4 mb-4 space-x-5">
@@ -83,7 +82,6 @@ function BookingsPage() {
                 <span>Cost</span>
                 <span>Date</span>
                 <span>Start Time</span>
-                <span>End Time</span>
               </div>
 
               {bookedData.map((item) => {
