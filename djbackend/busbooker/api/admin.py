@@ -31,7 +31,7 @@ class RouteStopInline(admin.TabularInline):
     model = RouteStops
     extra = 3
     min_num = 1
-    fields = ('stop', 'stop_sequence')
+    fields = ('stop', 'stop_sequence', "travel_time")
 
 @admin.register(Route)
 class RouteAdmin(admin.ModelAdmin):

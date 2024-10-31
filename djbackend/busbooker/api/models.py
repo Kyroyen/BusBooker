@@ -1,12 +1,13 @@
 from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from api.managers import *
 
 class Stop(models.Model):
     name = models.CharField(max_length=50)
+    
     def __str__(self) -> str:
         return self.name
     
@@ -21,6 +22,9 @@ class RouteStops(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="routes")
     stop = models.ForeignKey(Stop, on_delete=models.CASCADE, related_name="stops_on_routes")
     stop_sequence = models.PositiveIntegerField()
+    travel_time = models.DurationField(default= timedelta(hours=1))
+    
+    read_manager = RouteStopReadManager()
     
     class Meta:
         unique_together = ('route', 'stop', "stop_sequence")

@@ -12,8 +12,6 @@ class BusSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             'bus_name',
-            'start_time',
-            'end_time',
             'fare',
             "scheduled_date",
             'total_bookings',
