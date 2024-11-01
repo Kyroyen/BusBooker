@@ -99,11 +99,11 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': POSTGRES_DATABASE_NAME,           # Database name from Docker run command
-        'USER': POSTGRES_DATABASE_USER,                  # Username from Docker run command
-        'PASSWORD': POSTGRES_DATABASE_PASSWORD,   # Password from Docker run command
-        'HOST': POSTGRES_DATABASE_HOST,             # Use 'localhost' if mapped to 5432; otherwise, the IP address from Step 2
-        'PORT': POSTGRES_DATABASE_PORT,                  # Default PostgreSQL port
+        'NAME': POSTGRES_DATABASE_NAME,           
+        'USER': POSTGRES_DATABASE_USER,          
+        'PASSWORD': POSTGRES_DATABASE_PASSWORD,   
+        'HOST': POSTGRES_DATABASE_HOST,           
+        'PORT': POSTGRES_DATABASE_PORT,           
     }
 }
 

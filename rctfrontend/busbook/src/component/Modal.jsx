@@ -77,6 +77,10 @@ function Modal({ busData, onClose }) {
   };
 
   const toggleSeatSelection = (row, col) => {
+    if(showConfirm){
+      return;
+    }
+
     const seatIndex = selectedSeats.findIndex(
       (seat) => seat.row === row && seat.col === col
     );
@@ -166,13 +170,15 @@ function Modal({ busData, onClose }) {
                   key={`${rowIndex}-${colIndex}`}
                   className="flex items-center justify-center"
                 >
-                  <input
-                    type="checkbox"
-                    className="w-3.5 h-3.5 checkbox-container bg-yellow-400"
-                    checked={isSeatSelected(rowIndex, colIndex)}
-                    disabled={isSeatDisabled(rowIndex, colIndex)}
-                    onChange={() => toggleSeatSelection(rowIndex, colIndex)}
-                  />
+                  {isSeatDisabled(rowIndex, colIndex) ? (
+                    <div className="w-3.5 h-3.5 bg-gray-200 rounded"></div>
+                  ) : (
+                    <div
+                      onClick={() => toggleSeatSelection(rowIndex, colIndex)}
+                      style={{ backgroundColor: isSeatSelected(rowIndex, colIndex) ? "blue" : "#90EE90" }}
+                      className="w-3.5 h-3.5 bg-gray-200 rounded cursor-pointer"
+                    ></div>
+                  )}
                 </div>
               ))}
             </React.Fragment>

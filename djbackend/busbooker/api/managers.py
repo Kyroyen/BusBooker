@@ -90,7 +90,11 @@ class BusManagerReadOnly(BusManagerBase):
         return bus
 
     def get_busid_list_from_routeid_list(self, route_ids_list):
-        return zip(*self.get_querybase().filter(route__id__in=route_ids_list).values_list('id', "route__id"))
+        print(route_ids_list)
+        ert = self.get_querybase().filter(route__id__in=route_ids_list).values_list('id', "route__id")
+        if not ert:
+            return [[],[]]
+        return zip(*ert)
 
     def get_buses_from_flat_list(self, busid_flat_list):
         return [self.get_bus(id) for id in busid_flat_list]
