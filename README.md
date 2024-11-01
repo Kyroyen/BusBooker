@@ -1,15 +1,15 @@
 # Bus Booking Project
 
-[Documentation](https://docs.google.com/document/d/1X3Rd19y_iBWKK9mHp12V298aLuHh6Z2xqw06ztuetiE/edit?usp=sharing)
+## [Documentation](https://docs.google.com/document/d/1X3Rd19y_iBWKK9mHp12V298aLuHh6Z2xqw06ztuetiE/edit?usp=sharing)
 
-Demo Videos:
+## Demo Videos:
 - [User UI](https://drive.google.com/file/d/1Jjgy3L74j5xO3A8D8bJD6ZU-s93VX9h0/view?usp=sharing)
 - [Admin UI](https://drive.google.com/file/d/1Pe07m4BAloL8ZombodQLosFMc4PKL-O_/view?usp=sharing)
 
 
-## DjangoBackend
+### DjangoBackend
 
-## Table of Contents
+#### Table of Contents
 
 - [Setup Instructions backend](#setup-instructions-backend)
 - [Setup Instructions frontend](#setup-instructions-frontend)
@@ -17,16 +17,16 @@ Demo Videos:
 - [Running the Project](#running-the-project)
 ---
 
-## Setup Instructions BackEnd
+### Setup Instructions BackEnd
 
-### Prerequisites
+#### Prerequisites
 
 1. **Python** (>= 3.8)
 2. **Git**
 3. **Virtualenv** (recommended)
 4. **Database** (e.g., PostgreSQL, MySQL, SQLite)
 
-### Installation
+#### Installation
 
 1. **Clone the Repository**
 
@@ -70,7 +70,7 @@ Demo Videos:
    python manage.py createsuperuser
    ```
 
-## Running the Project
+### Running the Project
 
 To start the Django development server:
 
@@ -84,13 +84,10 @@ Here's a `README.md` file formatted for GitHub, tailored for a React app.
 
 ---
 
-# React App
+### React App
 
-A brief description of your project goes here. This project is built with React and provides [details of functionality, e.g., a user-friendly interface for interacting with an API].
+### Table of Contents
 
-## Table of Contents
-
-- [Features](#features)
 - [Setup Instructions](#setup-instructions)
 - [Environment Variables](#environment-variables)
 - [Running the Project](#running-the-project)
@@ -99,22 +96,14 @@ A brief description of your project goes here. This project is built with React 
 - [License](#license)
 
 ---
+### Setup Instructions Frontend
 
-## Features
-
-- [Feature 1]
-- [Feature 2]
-- [Feature 3]
-- [Additional features, e.g., state management with Redux, routing with React Router, API integration, etc.]
-
-## Setup Instructions Frontend
-
-### Prerequisites
+#### Prerequisites
 
 1. **Node.js** (>= 14.x recommended)
 2. **npm** (comes with Node.js)
 
-### Installation
+#### Installation
 
 1. **Clone the Repository**
 
@@ -138,7 +127,7 @@ A brief description of your project goes here. This project is built with React 
    cp .env.example .env
    ```
 
-## Running the Project
+### Running the Project
 
 To start the React development server:
 
@@ -150,18 +139,18 @@ npm start
 
 The project will be available at [http://localhost:3000](http://localhost:3000).
 
-## Environment Variables
+### Environment Variables
 
 The `.env` file should contain any necessary environment variables. Example variables include:
 
 - `REACT_APP_API_URL`
 - `REACT_APP_AUTH_KEY`
 
-## Building for Production
+### Building for Production
 
 To create
 
-## Environment Variables
+### Environment Variables
 
 The `.env` file should contain environment-specific configurations. Example variables include:
 
