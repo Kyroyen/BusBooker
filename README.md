@@ -1,8 +1,13 @@
 # Bus Booking Project
 
-## Django
+[Documentation](https://docs.google.com/document/d/1X3Rd19y_iBWKK9mHp12V298aLuHh6Z2xqw06ztuetiE/edit?usp=sharing)
 
-A brief description of your project goes here. This project is built using Django and serves as a [web application/API platform].
+Demo Videos:
+- [User UI](https://drive.google.com/file/d/1Jjgy3L74j5xO3A8D8bJD6ZU-s93VX9h0/view?usp=sharing)
+- [Admin UI](https://drive.google.com/file/d/1Pe07m4BAloL8ZombodQLosFMc4PKL-O_/view?usp=sharing)
+
+
+## DjangoBackend
 
 ## Table of Contents
 
