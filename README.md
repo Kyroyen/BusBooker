@@ -1,6 +1,6 @@
 # Bus Booking Project
 
-## [Documentation](https://docs.google.com/document/d/1X3Rd19y_iBWKK9mHp12V298aLuHh6Z2xqw06ztuetiE/edit?usp=sharing) << THE MAIN DOCUMENT FILE >>
+## [Documentation](https://docs.google.com/document/d/1X3Rd19y_iBWKK9mHp12V298aLuHh6Z2xqw06ztuetiE/edit?usp=sharing) << LINK TO THE MAIN DOCUMENT FILE >>
 
 ## Demo Videos:
 - [User UI](https://drive.google.com/file/d/1Jjgy3L74j5xO3A8D8bJD6ZU-s93VX9h0/view?usp=sharing)
